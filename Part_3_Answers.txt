@@ -1,0 +1,64 @@
+1. Find the album titled "Vinicius De Moraes", and then use an association-provided method to find all its tracks.
+
+    Album.find_by(title: 'Vinicius De Moraes')
+
+          output:
+            Album Load (14.1ms)  SELECT  "albums".* FROM "albums" WHERE "albums"."title" = $1 LIMIT $2  [["title", "Vinicius De Moraes"], ["LIMIT", 1]]
+            => #<Album id: 247, artist_id: 72, title: "Vinicius De Moraes", created_at: "2007-06-04 21:03:09", updated_at: "2014-01-29 22:14:02", ranking: nil>
+
+    Album.find_by(title: 'Vinicius De Moraes').tracks.pluck(:name)
+
+          output:
+            Album Load (0.8ms)  SELECT  "albums".* FROM "albums" WHERE "albums"."title" = $1 LIMIT $2  [["title", "Vinicius De Moraes"], ["LIMIT", 1]]
+            (2.1ms)  SELECT "tracks"."name" FROM "tracks" WHERE "tracks"."album_id" = $1  [["album_id", 247]]
+            => ["Pela Luz Dos Olhos Teus", "A Bencao E Outros", "Tudo Na Mais Santa Paz", "O Velho E Aflor", "Cotidiano N 2", "Adeus", "So Por Amor", "Meu Pranto Rolou", "Mulher Carioca", "Samba Do Jato", "Oi, La", "Vinicius, Poeta Do Encontro", "Soneto Da Separacao", "Samba Pra Endrigo", "Um Homem Chamado Alfredo"]
+
+--------------------------------------------------------------------------------
+2. Find the artist called "Philip Glass Ensemble", and then use an association-provided method to find all their albums.
+
+    Artist.find_by(name: 'Philip Glass Ensemble')
+
+          output:
+            Artist Load (8.6ms)  SELECT  "artists".* FROM "artists" WHERE "artists"."name" = $1 LIMIT $2  [["name", "Philip Glass Ensemble"], ["LIMIT", 1]]
+            => #<Artist id: 275, name: "Philip Glass Ensemble", created_at: "2012-09-13 07:53:09", updated_at: "2014-01-29 22:10:22">
+
+    Artist.find_by(name: 'Philip Glass Ensemble').albums.pluck(:title)
+
+          output:
+            Artist Load (0.9ms)  SELECT  "artists".* FROM "artists" WHERE "artists"."name" = $1 LIMIT $2  [["name", "Philip Glass Ensemble"], ["LIMIT", 1]]
+            (0.6ms)  SELECT "albums"."title" FROM "albums" WHERE "albums"."artist_id" = $1  [["artist_id", 275]]
+            => ["Koyaanisqatsi (Soundtrack from the Motion Picture)"]
+
+--------------------------------------------------------------------------------
+3. Find the "Brazilian Music" playlist and then use an association-provided method to find all its tracks.
+
+    Playlist.find_by(name: 'Brazilian Music')
+
+          output:
+            Playlist Load (0.6ms)  SELECT  "playlists".* FROM "playlists" WHERE "playlists"."name" = $1 LIMIT $2  [["name", "Brazilian Music"], ["LIMIT", 1]]
+            => #<Playlist id: 11, name: "Brazilian Music", created_at: "2004-09-20 11:30:22", updated_at: "2014-01-29 22:14:33">
+
+    Playlist.find_by(name: 'Brazilian Music').tracks.pluck(:name)
+
+          output:
+            Playlist Load (0.5ms)  SELECT  "playlists".* FROM "playlists" WHERE "playlists"."name" = $1 LIMIT $2  [["name", "Brazilian Music"], ["LIMIT", 1]]
+            (6.7ms)  SELECT "tracks"."name" FROM "tracks" INNER JOIN "playlists_tracks" ON "tracks"."id" = "playlists_tracks"."track_id" WHERE "playlists_tracks"."playlist_id" = $1  [["playlist_id", 11]]
+            => ["Sozinho", "Odara", "A Luz De Tieta", "Vai Passar", "A Banda", "Garota De Ipanema", "Tarde Em Itapoã", "O Que É O Que É ?", "Voce e Linda", "Sampa", "Admirável Gado Novo", "Açai", "Meu Bem-Querer", "Samurai", "Sina", "Fascinação", "Madalena", "Palco (Live)", "Quanta (Live)", "A Novidade (Live)", "A Novidade", "Filho Maravilha", "Coração De Estudante", "Nos Bailes Da Vida", "Maria, Maria", "Chocolate", "Azul Da Cor Do Mar", "Não Vou Ficar", "Gostava Tanto De Você", "Você", "Não Quero Dinheiro", "Bye, Bye Brasil", "Malandragem", "Esquinas", "O Bêbado e a Equilibrista", "Selassiê", "Taj Mahal", "O Descobridor Dos Sete Mares"]
+
+--------------------------------------------------------------------------------
+4. Find the "Jazz" genre and then use an association-provided method to find all its tracks.
+
+    Genre.find_by(name: 'Jazz').tracks.pluck(:name)
+
+          output:
+            Genre Load (0.6ms)  SELECT  "genres".* FROM "genres" WHERE "genres"."name" = $1 LIMIT $2  [["name", "Jazz"], ["LIMIT", 1]]
+            (1.6ms)  SELECT "tracks"."name" FROM "tracks" WHERE "tracks"."genre_id" = $1  [["genre_id", 2]]
+            => ["Desafinado", "Garota De Ipanema", "Samba De Uma Nota Só (One Note Samba)", "Por Causa De Você", "Ligia", "Fotografia", "Se Todos Fossem Iguais A Você (Instrumental)", "Falando De Amor", "Angela", "O Boto (Bôto)", "Canta, Canta Mais", "Quadrant", "Snoopy's search-Red baron", "Moon germs", "Stratus", "The pleasant pheasant", "Solo-Panhandler", "Do what cha wanna", "Outra Vez", "Heart of the Night", "De La Luz", "Westwood Moon", "Playtime", "Surrender", "As We Sleep", "J Squared", "Best Thing", "Jeru", "Compulsion", "Tempus Fugit", "Walkin'", "'Round Midnight", "Bye Bye Blackbird", "New Rhumba", "Generique", "Summertime", "The Pan Piper", "Someday My Prince Will Come", "My Funny Valentine (Live)", "E.S.P.", "Nefertiti", "Little Church (Live)", "Black Satin", "Jean Pierre (Live)", "Time After Time", "Portia", "Jeepers Creepers", "Blue Rythm Fantasy", "Drum Boogie", "Let Me Off Uptown", "Leave Us Leap", "Boogie Blues", "How High The Moon", "Disc Jockey Jump", "Up An' Atom", "Lemon Drop", "Coronation Drop", "Overtime", "Imagination", "Midget", "I'm Coming Virginia", "Payin' Them Dues Blues", "Jungle Drums", "Showcase", "Roll Call", "Otay", "Groovus Interruptus", "Paris On Mine", "In Time", "Plan B", "Outbreak", "Baltimore, DC", "Believe", "Miles Runs The Voodoo Down", "Doce De Carnaval (Candy All)", "Lamento De Carnaval", "Pretinha", "Colibri", "Love Is The Colour", "Magnetic Ocean", "Deep Waters", "Gypsy", "Journey Into Sunlight", "Sunchild", "Millenium", "Thinking 'Bout Tomorrow", "Jacob's Ladder", "She Wears Black", "Dark Side Of The Cog", "Springsville", "The Maids Of Cadiz", "The Duke", "My Ship", "New Rhumba", "The Meaning Of The Blues", "Lament", "Springsville (Alternate Take)", "Blues For Pablo (Alternate Take)", "I Don't Wanna Be Kissed (By Anyone But You) (Alternate Take)", "Morning Dance", "Jubilee", "Rasul", "Song For Lorraine", "Starburst", "Heliopolis", "It Doesn't Matter", "Little Linda", "Amanda", "Despertar", "OAM's Blues", "Dindi (Dindi)", "Corcovado (Quiet Nights Of Quiet Stars)", "Spanish moss-\"A sound portrait\"-Spanish moss", "Midnight", "Now's The Time", "So What", "Petits Machins (Little Stuff)", "Opus No.1", "Bop Boogie", "Don't Take Your Love From Me", "Swedish Schnapps", "Talkin Loud and Saying Nothin", "L'Arc En Ciel De Miles", "Miles Ahead", "I Don't Wanna Be Kissed (By Anyone But You)", "End Of Romanticism", "Blues For Pablo", "The Meaning Of The Blues/Lament (Alternate Take)", "Valentino's", "When Evening Falls"]
+
+--------------------------------------------------------------------------------
+5. Find the track "My Time After Awhile" and then use an association-provided method to find its genre.
+--------------------------------------------------------------------------------
+6. Use an association-provided method to find the media type of that same track.
+--------------------------------------------------------------------------------
+7. Use an association-provided method to find the album that track appears on.
+--------------------------------------------------------------------------------
